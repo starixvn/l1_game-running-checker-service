@@ -1,8 +1,4 @@
 export default {
-    // system: "VG2",
-    // owUrl: "https://l2-ows.lumigame.com/SabaClub",
-    // simulatorUrl: "https://l2-glbs.lumigame.com",
-    // proxy: "https://l2-proxy.lumigame.com",
     system: "SC1",
     owUrl: "https://l1-ows1.lumigame.com/SabaClub",
     simulatorUrl: "https://l1-glbs1.lumigame.com",
@@ -10,6 +6,14 @@ export default {
     gameInfo: {
         gameNames: ["MagicForest"],
         proxyRoute: "/magicforest/socket.io",
+    },
+    authenticateSettings: {
+        url: "https://l1-auth1.lumigame.com/",
+        id: "autobot",
+        secret: "autobot@20luminet&",
+        requestTimeout: 10000,
+        useAuthenticate: true,
+        audiences: ["admin-api", "game-services"],
     },
     testConfig: {
         totalUsers: 800,

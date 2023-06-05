@@ -1,7 +1,8 @@
 import Fastify from "fastify";
-import { PlayerIds } from "./constants/constants";
 import { initPlayer } from "./runners/player-initializer";
+import { player } from "./runners/player";
 import { bet } from "./handlers/bet-handler";
+import { post, init } from "./auths/authentication-helpers";
 import config from "./config";
 
 const fastify = Fastify({
@@ -14,18 +15,25 @@ fastify.get("/", async (request, reply) => {
 });
 
 fastify.post("/bet", async (request, reply) => {
-    const { gameNames, proxyRoute } = config.gameInfo;
-    const { amount, betChoice, freeSpin } = request.body;
+    const { gameName, amount, betChoice, freeSpin, board } = request.body;
+    const proxyRoute = `/${gameName.toLocaleLowerCase()}/socket.io`;
+    const setBoardParams = { name: player.nickname, result: board };
 
-    const roundId = await bet(PlayerIds[0], { name: gameNames[0], proxyRoute }, { amount, betChoice, freeSpin });
+    await post(`${config.proxy}/${gameName.toLocaleLowerCase()}/api/set-board`, setBoardParams);
+    const settlement = await bet(player.id, { name: gameName, proxyRoute }, { amount, betChoice, freeSpin });
 
-    reply.code(200).send({ roundId });
+    reply.code(200).send({ settlement });
+});
+
+fastify.post("/create-player", async (request, reply) => {
+    await initPlayer(player.id, player.nickname);
 });
 
 // Run the server!
 const start = async () => {
     try {
-        await initPlayer(PlayerIds[0]);
+        await init(config.authenticateSettings);
+        await initPlayer(player.id, player.nickname);
         await fastify.listen({ port: 3000 });
     } catch (err) {
         fastify.log.error(err);

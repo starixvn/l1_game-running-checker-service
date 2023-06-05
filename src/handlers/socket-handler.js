@@ -26,7 +26,7 @@ export const placeBet = async (socket, betInfo, gameInfo) =>
             }
 
             if (data.finish && isWaitForSettlement) {
-                resolve(data.finish.roundId);
+                resolve(data.finish);
             }
 
             if (data.endBet === -1) {

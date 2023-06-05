@@ -4,11 +4,11 @@ import config from "../config";
 
 const userServiceUrl = `${config.proxy}/user`;
 
-export const signName = async (authorizeInfo) => {
+export const signName = async (authorizeInfo, nickname = null) => {
     const requestBody = {
         session: authorizeInfo.ss,
         username: authorizeInfo.username,
-        nickname: `STest${authorizeInfo.username.split("_")[1]}`,
+        nickname: nickname ?? `STest${authorizeInfo.username.split("_")[1]}`,
         browserUserAgent: userAgent,
         avatar: 0,
     };

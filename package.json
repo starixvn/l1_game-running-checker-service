@@ -8,7 +8,8 @@
     "dependencies": {
         "axios": "^0.27.2",
         "fastify": "^4.17.0",
-        "socket.io-client": "^4.5.2"
+        "socket.io-client": "^4.5.2",
+        "openid-client": "^4.2.0"
     },
     "devDependencies": {
         "nodemon": "^2.0.20"

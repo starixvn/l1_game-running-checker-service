@@ -11,11 +11,11 @@ export const setupStressUsers = async () => {
     console.log("SETUP TEST USERS DONE !");
 };
 
-export const initPlayer = async (playerId) => {
+export const initPlayer = async (playerId, nickname) => {
     const ssoToken = await getSSOToken(playerId);
     const authorizeInfo = await authorize(ssoToken);
 
     await setDefaultBalance(playerId);
 
-    return signName(authorizeInfo);
+    return signName(authorizeInfo, nickname);
 };
