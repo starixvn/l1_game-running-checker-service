@@ -34,7 +34,7 @@ const start = async () => {
     try {
         await init(config.authenticateSettings);
         await initPlayer(player.id, player.nickname);
-        await fastify.listen({ port: 3000 });
+        await fastify.listen({ port: 5000 });
     } catch (err) {
         fastify.log.error(err);
         process.exit(1);
