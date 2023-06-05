@@ -1,7 +1,7 @@
 import { randomString } from "../helpers/random";
 import axios from "axios";
 import { userAgent, SystemInfo } from "../constants/constants";
-import config from "../config";
+import config from "../app-configs";
 
 export const getSSOToken = async (playerId) => {
     const systemInfo = SystemInfo[config.system];

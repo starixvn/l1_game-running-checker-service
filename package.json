@@ -1,9 +1,8 @@
 {
     "type": "module",
-    "main": "./src/bot.js",
+    "main": "./src/app.js",
     "scripts": {
-        "dev": "nodemon --es-module-specifier-resolution=node --watch ./src ./src/bot.js",
-        "start": "nodemon --es-module-specifier-resolution=node --watch ./src ./src/server.js"
+        "start": "nodemon --es-module-specifier-resolution=node --watch ./src ./src/app.js"
     },
     "dependencies": {
         "axios": "^0.27.2",

@@ -3,13 +3,12 @@ import { initPlayer } from "./runners/player-initializer";
 import { player } from "./runners/player";
 import { bet } from "./handlers/bet-handler";
 import { post, init } from "./auths/authentication-helpers";
-import config from "./config";
+import config from "./app-configs";
 
 const fastify = Fastify({
     logger: true,
 });
 
-// Declare a route
 fastify.get("/", async (request, reply) => {
     return { hello: "world" };
 });
@@ -17,9 +16,10 @@ fastify.get("/", async (request, reply) => {
 fastify.post("/bet", async (request, reply) => {
     const { gameName, amount, betChoice, freeSpin, board } = request.body;
     const proxyRoute = `/${gameName.toLocaleLowerCase()}/socket.io`;
-    const setBoardParams = { name: player.nickname, result: board };
 
+    const setBoardParams = { name: player.nickname, result: board };
     await post(`${config.proxy}/${gameName.toLocaleLowerCase()}/api/set-board`, setBoardParams);
+
     const settlement = await bet(player.id, { name: gameName, proxyRoute }, { amount, betChoice, freeSpin });
 
     reply.code(200).send({ settlement });

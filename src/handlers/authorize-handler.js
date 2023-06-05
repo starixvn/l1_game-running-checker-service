@@ -1,6 +1,6 @@
 import axios from "axios";
 import { userAgent } from "../constants/constants";
-import config from "../config";
+import config from "../app-configs";
 
 const userServiceUrl = `${config.proxy}/user`;
 

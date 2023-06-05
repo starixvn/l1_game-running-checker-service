@@ -1,4 +1,4 @@
-import config from "../config";
+import config from "../app-configs";
 
 const userAgent = "axios/0.27.2";
 

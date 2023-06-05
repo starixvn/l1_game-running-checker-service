@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 import { userAgent } from "../constants/constants";
-import config from "../config";
+import config from "../app-configs";
 
 const promiseTimeOut = 5000;
 

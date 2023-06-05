@@ -3,10 +3,6 @@ export default {
     owUrl: "https://l1-ows1.lumigame.com/SabaClub",
     simulatorUrl: "https://l1-glbs1.lumigame.com",
     proxy: "https://l1-proxy1.lumigame.com",
-    gameInfo: {
-        gameNames: ["MagicForest"],
-        proxyRoute: "/magicforest/socket.io",
-    },
     authenticateSettings: {
         url: "https://l1-auth1.lumigame.com/",
         id: "autobot",
