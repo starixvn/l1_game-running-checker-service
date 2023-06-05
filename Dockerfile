@@ -3,7 +3,6 @@ WORKDIR /app
 COPY package.json yarn.lock .modprunerrc ./
 RUN npm run reg \
     && yarn install --production \
-    && npm run uglify \
     && npx mod-pruner prune --force
 COPY ./src/ .
 
