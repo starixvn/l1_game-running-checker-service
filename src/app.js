@@ -10,7 +10,7 @@ const fastify = Fastify({
 });
 
 fastify.get("/", async (request, reply) => {
-    return { hello: "world" };
+    reply.code(200).send("Hello, I'm AutoBot");
 });
 
 fastify.post("/bet", async (request, reply) => {
