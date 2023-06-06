@@ -37,7 +37,7 @@ const start = async () => {
     try {
         await init(config.authenticateSettings);
         await initPlayer(player.id, player.nickname);
-        await fastify.listen({ port: 5000 });
+        await fastify.listen({ port: 5000, host: "0.0.0.0" });
 
         console.log(`AutoBot started at ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`);
     } catch (err) {
