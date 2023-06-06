@@ -25,6 +25,13 @@ export const placeBet = async (socket, betInfo, gameInfo) =>
                 isWaitForSettlement = true;
             }
 
+            if (data.bonuses) {
+                const { bonus } = data.bonuses;
+                for (let index = 1; index <= bonus; index++) {
+                    socket.emit("bonus", { chest: index });
+                }
+            }
+
             if (data.finish && isWaitForSettlement) {
                 resolve(data.finish);
             }
