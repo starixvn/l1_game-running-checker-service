@@ -6,10 +6,13 @@ import { post, init } from "./auths/authentication-helpers";
 import config from "./app-configs";
 
 const fastify = Fastify({
-    logger: true,
+    logger: false,
+    ignoreDuplicateSlashes: true,
+    requestTimeout: 60,
 });
 
 fastify.get("/", async (request, reply) => {
+    console.log(`Hello, I'm AutoBot ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`);
     reply.code(200).send("Hello, I'm AutoBot");
 });
 
