@@ -27,6 +27,29 @@ fastify.post("/bet", async (request, reply) => {
     reply.code(200).send({ settlement });
 });
 
+fastify.post("/bet-by-batch", async (request, reply) => {
+    const { game } = request.query;
+    const bets = request.body;
+    const proxyRoute = `/${game.toLocaleLowerCase()}/socket.io`;
+
+    const testCases = Object.keys(bets);
+    const result = {};
+
+    for await (const testId of testCases) {
+        const { amount, betChoice, board, freeSpin } = bets[testId];
+
+        const setBoardParams = { name: player.nickname, result: board.split(",").map((x) => parseInt(x)) };
+        await post(`${config.proxy}/${game.toLocaleLowerCase()}/api/set-board`, setBoardParams);
+
+        const convertChoices = betChoice.split(",").map((x) => parseInt(x));
+        const settlement = await bet(player.id, { name: game, proxyRoute }, { amount, betChoice: convertChoices, freeSpin });
+
+        result[testId] = { roundId: settlement.roundId };
+    }
+
+    reply.code(200).send({ result });
+});
+
 fastify.post("/create-player", async (request, reply) => {
     await initPlayer(player.id, player.nickname);
 });
