@@ -8,7 +8,7 @@ Placing bets with multiple scenarios.
 - **API** https://l1-proxy1.lumigame.com/autobot/bet-by-batch?game=[GameName]
 
 - **Params** 
-```{
+```js{
     "TC001": {
         "gameName": "MagicForest",
         "amount": 1,
@@ -23,10 +23,11 @@ Placing bets with multiple scenarios.
         "board": "6,4,1,3,5,4,2,9,8,6,7,1,6,4,2",
         "freeSpin": false
     }
-}```
+}
+```
 
 - **Response**
-```{
+```js{
     "result": {
         "TC001": {
             "roundId": 19259
@@ -35,4 +36,5 @@ Placing bets with multiple scenarios.
             "roundId": 19260
         }
     }
-}```
+}
+```
