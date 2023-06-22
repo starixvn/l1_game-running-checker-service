@@ -1,9 +1,10 @@
 import Fastify from "fastify";
 import { initPlayer } from "./runners/player-initializer";
-import { player } from "./runners/player";
+import { players } from "./runners/players";
 import { bet } from "./handlers/bet-handler";
 import { post, init } from "./auths/authentication-helpers";
 import config from "./app-configs";
+import { convertBetChoice } from "./helpers/convert-bet-choice";
 
 const fastify = Fastify({
     logger: true,
@@ -16,49 +17,59 @@ fastify.get("/", async (request, reply) => {
 });
 
 fastify.post("/bet", async (request, reply) => {
-    const { gameName, amount, betChoice, freeSpin, board } = request.body;
+    const { gameName, amount, betChoice, freeSpin, board, currency } = request.body;
     const proxyRoute = `/${gameName.toLocaleLowerCase()}/socket.io`;
 
-    const setBoardParams = { name: player.nickname, result: board };
+    const player = players.find((player) => player.currency === currency);
+    const setBoardParams = { name: player.nickname, result: board.split(",").map((x) => parseInt(x)) };
     await post(`${config.proxy}/${gameName.toLocaleLowerCase()}/api/set-board`, setBoardParams);
+    const convertChoices = convertBetChoice(betChoice);
+    const settlement = await bet(player, { name: gameName, proxyRoute }, { amount, betChoice: convertChoices, freeSpin });
 
-    const settlement = await bet(player.id, { name: gameName, proxyRoute }, { amount, betChoice, freeSpin });
-
-    reply.code(200).send({ settlement });
+    reply.code(200).send({ settlement, playerId: player.id, playerName: player.nickname });
 });
 
 fastify.post("/bet-by-batch", async (request, reply) => {
     const { game } = request.query;
     const bets = request.body;
+
     const proxyRoute = `/${game.toLocaleLowerCase()}/socket.io`;
 
     const testCases = Object.keys(bets);
     const result = {};
 
     for await (const testId of testCases) {
-        const { amount, betChoice, board, freeSpin } = bets[testId];
+        const { amount, betChoice, board, freeSpin, currency } = bets[testId];
 
+        const player = players.find((player) => player.currency === currency);
         const setBoardParams = { name: player.nickname, result: board.split(",").map((x) => parseInt(x)) };
         await post(`${config.proxy}/${game.toLocaleLowerCase()}/api/set-board`, setBoardParams);
 
-        const convertChoices = betChoice.split(",").map((x) => parseInt(x));
-        const settlement = await bet(player.id, { name: game, proxyRoute }, { amount, betChoice: convertChoices, freeSpin });
+        const convertChoices = convertBetChoice(betChoice);
+        const settlement = await bet(player, { name: game, proxyRoute }, { amount, betChoice: convertChoices, freeSpin });
 
-        result[testId] = { roundId: settlement.roundId };
+        result[testId] = { roundId: settlement.roundId, playerId: player.id, playerName: player.nickname };
     }
 
     reply.code(200).send({ result });
 });
 
 fastify.post("/create-player", async (request, reply) => {
-    await initPlayer(player.id, player.nickname);
+    const { currency } = request.body;
+    const player = players.find((player) => player.currency === currency);
+    await initPlayer(player.id, player.nickname, player.currency);
 });
 
 // Run the server!
 const start = async () => {
     try {
         await init(config.authenticateSettings);
-        await initPlayer(player.id, player.nickname);
+        const playersStart = players.filter((player) => player.system === config.system);
+
+        for await (const player of playersStart) {
+            await initPlayer(player.id, player.nickname, player.currency);
+        }
+
         await fastify.listen({ port: 5000, host: "0.0.0.0" });
 
         console.log(`AutoBot started at ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`);

@@ -6,6 +6,7 @@ const promiseTimeOut = 5000;
 
 export const joinGame = async (gameInfo, authorizeInfo) => {
     const socket = await connectSocket(gameInfo);
+
     const signInSuccessful = await requestSignIn(socket, authorizeInfo);
     const inGameSuccessful = await requestInGame(socket, gameInfo);
 

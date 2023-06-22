@@ -11,8 +11,8 @@ export const setupStressUsers = async () => {
     console.log("SETUP TEST USERS DONE !");
 };
 
-export const initPlayer = async (playerId, nickname) => {
-    const ssoToken = await getSSOToken(playerId);
+export const initPlayer = async (playerId, nickname, currency) => {
+    const ssoToken = await getSSOToken(playerId, currency);
     const authorizeInfo = await authorize(ssoToken);
 
     await setDefaultBalance(playerId);

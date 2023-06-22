@@ -2,13 +2,14 @@ import getSSOToken from "./sso-handler";
 import { authorize } from "./authorize-handler.js";
 import { joinGame, placeBet } from "./socket-handler";
 
-export const bet = async (playerId, gameInfo, bet) => {
+export const bet = async (player, gameInfo, bet) => {
     try {
-        const ssoToken = await getSSOToken(playerId);
+      
+        const { id, currency } = player;
+        const ssoToken = await getSSOToken(id, currency);
         const authorizeInfo = await authorize(ssoToken);
-
         const socket = await joinGame(gameInfo, authorizeInfo);
-
+    
         if (socket) {
             return await autoPlaceBet(socket, gameInfo, bet);
         }

@@ -3,13 +3,13 @@ import axios from "axios";
 import { userAgent, SystemInfo } from "../constants/constants";
 import config from "../app-configs";
 
-export const getSSOToken = async (playerId) => {
+export const getSSOToken = async (playerId, currency) => {
     const systemInfo = SystemInfo[config.system];
     const requestBody = {
         playerId: playerId,
         playerName: randomString(8),
         language: "vi-VN",
-        currency: systemInfo.currency,
+        currency: currency ?? systemInfo.currency,
         seq: "d,y,lumi",
         siteId: "4100300",
         siteName: "lumi",
@@ -30,7 +30,7 @@ export const setDefaultBalance = async (playerId) => {
     const params = {
         operator: "ow",
         balance: 20000,
-        systemType: "SC1",
+        systemType: config.system,
     };
 
     return axios.post(
