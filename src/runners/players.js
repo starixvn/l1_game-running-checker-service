@@ -1,3 +1,11 @@
+export const findPlayer = (currency) => {
+    return players.find((player) => player.currency === currency);
+};
+
+export const playersStartWithFilter = (system) => {
+    return players.filter((player) => player.system === system);
+};
+
 export const players = [
     {
         id: "999888777",
