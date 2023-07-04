@@ -26,6 +26,12 @@ export const players = [
         system: "SC1",
     },
     {
+        id: "999888791",
+        nickname: "autobot985",
+        currency: "INH",
+        system: "SC1",
+    },
+    {
         id: "999888780",
         nickname: "autobot996",
         currency: "INH",
