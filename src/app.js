@@ -18,7 +18,7 @@ fastify.get("/", async (request, reply) => {
 
 fastify.post("/set-result", async (request, reply) => {
     const { gameName, board, currency } = request.body;
-    const player = findPlayer(currency);
+    const player = findPlayer(currency, config.system);
     const setBoardParams = { name: player.nickname, result: board.split(",").map((x) => parseInt(x)) };
     await post(`${config.proxy}/${gameName.toLocaleLowerCase()}/api/set-board`, setBoardParams);
 
@@ -29,7 +29,7 @@ fastify.post("/bet", async (request, reply) => {
     const { gameName, amount, betChoice, freeSpin, board, currency } = request.body;
     const proxyRoute = `/${gameName.toLocaleLowerCase()}/socket.io`;
 
-    const player = findPlayer(currency);
+    const player = findPlayer(currency, config.system);
     const setBoardParams = { name: player.nickname, result: board.split(",").map((x) => parseInt(x)) };
 
     await post(`${config.proxy}/${gameName.toLocaleLowerCase()}/api/set-board`, setBoardParams);
@@ -51,10 +51,11 @@ fastify.post("/bet-by-batch", async (request, reply) => {
     for await (const testId of testCases) {
         const { amount, betChoice, board, freeSpin, currency } = bets[testId];
 
-        const player = findPlayer(currency);
+        const player = findPlayer(currency, config.system);
         const setBoardParams = { name: player.nickname, result: board.split(",").map((x) => parseInt(x)) };
+       
         await post(`${config.proxy}/${game.toLocaleLowerCase()}/api/set-board`, setBoardParams);
-
+        
         const convertChoices = convertBetChoice(betChoice);
         const settlement = await bet(player, { name: game, proxyRoute }, { amount, betChoice: convertChoices, freeSpin });
 
@@ -66,7 +67,7 @@ fastify.post("/bet-by-batch", async (request, reply) => {
 
 fastify.post("/create-player", async (request, reply) => {
     const { currency } = request.body;
-    const player = findPlayer(currency);
+    const player = findPlayer(currency, config.system);
     await initPlayer(player.id, player.nickname, player.currency);
 });
 
@@ -74,6 +75,7 @@ fastify.post("/create-player", async (request, reply) => {
 const start = async () => {
     try {
         await init(config.authenticateSettings);
+        
         const playersStart = playersStartWithFilter(config.system);
 
         for await (const player of playersStart) {

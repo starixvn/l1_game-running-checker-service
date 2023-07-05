@@ -1,5 +1,5 @@
-export const findPlayer = (currency) => {
-    return players.find((player) => player.currency === currency);
+export const findPlayer = (currency, system) => {
+    return players.find((player) => player.currency === currency && player.system === system);
 };
 
 export const playersStartWithFilter = (system) => {
@@ -29,6 +29,12 @@ export const players = [
         id: "999888791",
         nickname: "autobot985",
         currency: "INH",
+        system: "SC1",
+    },
+    {
+        id: "999888793",
+        nickname: "autobot983",
+        currency: "WON",
         system: "SC1",
     },
     {
