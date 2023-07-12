@@ -17,9 +17,20 @@ export const signName = async (authorizeInfo, nickname = null) => {
 };
 
 export const authorize = async (ssoToken) => {
-    const result = await axios.get(`${userServiceUrl}/auth/sso?token=${ssoToken}&system=1`, {
+    const result = await axios.get(`${userServiceUrl}/auth/sso?token=${ssoToken}&system=5`, {
         "user-agent": userAgent,
     });
+
+    return result.data;
+};
+
+export const setCurrencyGroup = async (ssoToken) => {
+    const result = await axios.get(
+        `${userServiceUrl}/CurrencyGroup/group?groupType=Default&token=${ssoToken}&language=vi-VN&gameId=0&ref=&rurl=&partnerId=${config.partnerId}`,
+        {
+            "user-agent": userAgent,
+        }
+    );
 
     return result.data;
 };

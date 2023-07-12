@@ -1,8 +1,9 @@
 import { io } from "socket.io-client";
 import { userAgent } from "../constants/constants";
 import config from "../app-configs";
+import * as MsgpackParser from "socket.io-msgpack-parser";
 
-const promiseTimeOut = 5000;
+const promiseTimeOut = 10000;
 
 export const joinGame = async (gameInfo, authorizeInfo) => {
     const socket = await connectSocket(gameInfo);
@@ -53,6 +54,7 @@ const connectSocket = async (gameInfo) =>
             transports: ["websocket"],
             upgrade: false,
             path: gameInfo.proxyRoute,
+            parser: MsgpackParser,
             extraHeaders: {
                 "user-agent": userAgent,
             },

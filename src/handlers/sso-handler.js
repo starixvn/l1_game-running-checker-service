@@ -1,29 +1,38 @@
-import { randomString } from "../helpers/random";
 import axios from "axios";
-import { userAgent, SystemInfo } from "../constants/constants";
 import config from "../app-configs";
+import * as crypto from "crypto";
 
-export const getSSOToken = async (playerId, currency) => {
-    const systemInfo = SystemInfo[config.system];
-    const requestBody = {
-        playerId: playerId,
-        playerName: randomString(8),
-        language: "vi-VN",
-        currency: currency ?? systemInfo.currency,
-        seq: "d,y,lumi",
-        siteId: "4100300",
-        siteName: "lumi",
-        ip: "",
-        browserUserAgent: userAgent,
-        auth: systemInfo.auth,
-        gameId: 0,
-        domain: "example.com",
-        appType: 1,
+const PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCX2tv81auMPajzyJADf1Iga5iJ
+LHI7flt/ae0Bb6OoE6ZdN1puvX7cAKCfhRPrr6g5kViBt9zlChGd50ZHwuIxw/3n
+GMmkMb8kI4UEBSh+Q7br7StITGtmlq/upfXtXYKlypZ6IejDOypUFTe7gZIGwe/M
+qsD6xdP/PYXJauo2JwIDAQAB
+-----END PUBLIC KEY-----`;
+
+const encrypt = (text) => {
+    const buffer = Buffer.from(text);
+    const encrypted = crypto.publicEncrypt({ key: PUBLIC_KEY, padding: crypto.constants.RSA_PKCS1_PADDING }, buffer);
+
+    return encrypted.toString("base64");
+};
+
+export const getSSOToken = async (username, password) => {
+    const encryptPassword = {
+        timestamp: new Date().toUTCString(),
+        username,
+        password,
     };
 
-    const result = await axios.post(`${config.simulatorUrl}/signin/sso`, requestBody);
+    const request = {
+        username,
+        encryptedPassword: encrypt(JSON.stringify(encryptPassword)),
+        language: "en",
+    };
 
-    return result.data.token;
+    const result = await axios.post("https://connect.gamesaba.com/api/login", request);
+    const token = new URL(result?.data?.redirectUri)?.searchParams.get("token");
+
+    return token;
 };
 
 export const setDefaultBalance = async (playerId) => {

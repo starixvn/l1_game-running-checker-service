@@ -8,9 +8,11 @@
     },
     "dependencies": {
         "axios": "^0.27.2",
+        "crypto": "^1.0.1",
         "fastify": "^4.17.0",
+        "openid-client": "^4.2.0",
         "socket.io-client": "^4.5.2",
-        "openid-client": "^4.2.0"
+        "socket.io-msgpack-parser": "^3.0.2"
     },
     "devDependencies": {
         "nodemon": "^2.0.20"
