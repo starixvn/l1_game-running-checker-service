@@ -1,10 +1,6 @@
 import Fastify from "fastify";
-import { initPlayer } from "./runners/player-initializer";
-import { findPlayer } from "./runners/players";
 import { bet } from "./handlers/bet-handler";
-import { post, init } from "./auths/authentication-helpers";
-import config from "./app-configs";
-import { convertBetChoice } from "./helpers/convert-bet-choice";
+import { openGame } from "./handlers/open-game";
 
 const fastify = Fastify({
     logger: true,
@@ -29,10 +25,17 @@ fastify.post("/bet", async (request, reply) => {
     reply.code(200).send(result);
 });
 
-fastify.post("/create-player", async (request, reply) => {
-    const { currency } = request.body;
-    const player = findPlayer(currency, config.system);
-    await initPlayer(player.id, player.nickname, player.currency);
+fastify.post("/open-game", async (request, reply) => {
+    const { player, gameName } = request.body;
+
+    const gameInfo = {
+        name: gameName,
+        proxyRoute: `/${gameName.toLocaleLowerCase()}/socket.io`,
+    };
+
+    const result = await openGame(player, gameInfo);
+
+    reply.code(200).send(result);
 });
 
 // Run the server!
