@@ -29,10 +29,13 @@ export const getSSOToken = async (username, password) => {
         language: "en",
     };
 
-    const result = await axios.post("https://connect.gamesaba.com/api/login", request);
-    const token = new URL(result?.data?.redirectUri)?.searchParams.get("token");
+    const result = await axios.post(config.connectSiteUrl, request);
 
-    return token;
+    if (result?.data?.redirectUri) {
+        return new URL(result?.data?.redirectUri)?.searchParams.get("token");
+    }
+
+    return null;
 };
 
 export const setDefaultBalance = async (playerId) => {

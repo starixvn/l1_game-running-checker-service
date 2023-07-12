@@ -1,6 +1,6 @@
 import Fastify from "fastify";
 import { bet } from "./handlers/bet-handler";
-import { openGame } from "./handlers/open-game";
+import { openGames, openGame } from "./handlers/open-game";
 
 const fastify = Fastify({
     logger: true,
@@ -34,6 +34,22 @@ fastify.post("/open-game", async (request, reply) => {
     };
 
     const result = await openGame(player, gameInfo);
+
+    reply.code(200).send(result);
+});
+
+fastify.post("/open-games", async (request, reply) => {
+    const { player, games } = request.body;
+
+    const result = await openGames(player, games);
+
+    reply.code(200).send(result);
+});
+
+fastify.post("/open-all-games", async (request, reply) => {
+    const { player } = request.body;
+
+    const result = await openGames(player);
 
     reply.code(200).send(result);
 });

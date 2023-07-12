@@ -3,18 +3,26 @@ import { userAgent } from "../constants/constants";
 import config from "../app-configs";
 import * as MsgpackParser from "socket.io-msgpack-parser";
 
-const promiseTimeOut = 10000;
+const promiseTimeOut = 5000;
 
 export const joinGame = async (gameInfo, authorizeInfo) => {
-    const socket = await connectSocket(gameInfo);
+    console.log(gameInfo.name);
+    try {
+        const socket = await connectSocket(gameInfo);
 
-    const signInSuccessful = await requestSignIn(socket, authorizeInfo);
-    const inGameSuccessful = await requestInGame(socket, gameInfo);
+        if (!socket || !socket.emit) {
+            return { [gameInfo.name]: "Connect Socket failed" };
+        }
+        const signInSuccessful = await requestSignIn(socket, authorizeInfo);
+        const inGameResult = await requestInGame(socket, gameInfo);
 
-    if (signInSuccessful && inGameSuccessful) {
-        return socket;
-    } else {
-        return false;
+        if (signInSuccessful && inGameResult) {
+            return { [gameInfo.name]: { ...inGameResult } };
+        } else {
+            return { [gameInfo.name]: "Ingame failed" };
+        }
+    } catch (err) {
+        return { [gameInfo.name]: err.message };
     }
 };
 
@@ -69,7 +77,7 @@ const connectSocket = async (gameInfo) =>
         });
 
         socket.on("connect_error", (error) => {
-            reject(error);
+            resolve(error);
         });
 
         setTimeout(() => {
@@ -102,11 +110,12 @@ const requestInGame = async (socket, gameInfo) =>
 
         socket.on(gameInfo.name, (data) => {
             if (data.gameConfigs) {
-                resolve(true);
+                const { remainingTime, roundId } = data;
+                resolve({ remainingTime, roundId });
             }
 
             setTimeout(() => {
-                reject("inGame - time out");
+                resolve({ msg: "ingame-timeout" });
             }, promiseTimeOut);
         });
     });
