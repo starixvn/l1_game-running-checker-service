@@ -1,5 +1,4 @@
 import Fastify from "fastify";
-import { bet } from "./handlers/bet-handler";
 import { openGames, openGame } from "./handlers/open-game";
 
 const fastify = Fastify({
@@ -10,19 +9,6 @@ const fastify = Fastify({
 
 fastify.get("/", async (request, reply) => {
     reply.code(200).send("Hello, I'm AutoBot");
-});
-
-fastify.post("/bet", async (request, reply) => {
-    const { player, betInfo, gameName } = request.body;
-
-    const gameInfo = {
-        name: gameName,
-        proxyRoute: `/${gameName.toLocaleLowerCase()}/socket.io`,
-    };
-
-    const result = await bet(player, gameInfo, betInfo);
-
-    reply.code(200).send(result);
 });
 
 fastify.post("/open-game", async (request, reply) => {
@@ -42,14 +28,6 @@ fastify.post("/open-games", async (request, reply) => {
     const { player, games } = request.body;
 
     const result = await openGames(player, games);
-
-    reply.code(200).send(result);
-});
-
-fastify.post("/open-all-games", async (request, reply) => {
-    const { player } = request.body;
-
-    const result = await openGames(player);
 
     reply.code(200).send(result);
 });

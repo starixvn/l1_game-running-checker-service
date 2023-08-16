@@ -38,16 +38,4 @@ export const getSSOToken = async (username, password) => {
     return null;
 };
 
-export const setDefaultBalance = async (playerId) => {
-    const params = {
-        operator: "ow",
-        balance: 20000,
-        systemType: config.system,
-    };
-
-    return axios.post(
-        `${config.owUrl}/SetDefaultBalance?playerId=${playerId}&operator=${params.operator}&balance=${params.balance}&systemType=${params.systemType}`
-    );
-};
-
 export default getSSOToken;

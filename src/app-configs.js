@@ -1,6 +1,7 @@
 export default {
     system: "SC1",
-    proxy: "https://proxy.sabagame.com",
+    proxy: "https://l1-proxy1.lumigame.com",
     partnerId: "ONEworks1",
-    connectSiteUrl: "https://connect.gamesaba.com/api/login",
+    connectSiteUrl: "https://l1-connectsite1.lumigame.com/api/login",
+    enabledMsgPack: false,
 };

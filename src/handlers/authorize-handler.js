@@ -26,7 +26,7 @@ export const authorize = async (ssoToken) => {
 
 export const setCurrencyGroup = async (ssoToken) => {
     const result = await axios.get(
-        `${userServiceUrl}/CurrencyGroup/group?groupType=Default&token=${ssoToken}&language=vi-VN&gameId=0&ref=&rurl=&partnerId=${config.partnerId}`,
+        `${userServiceUrl}/CurrencyGroup/group?groupType=Default&token=${ssoToken}&language=vi-VN&gameId=0&partnerId=${config.partnerId}`,
         {
             "user-agent": userAgent,
         }

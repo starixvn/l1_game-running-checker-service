@@ -13,8 +13,11 @@ export const joinGame = async (gameInfo, authorizeInfo) => {
         if (!socket || !socket.emit) {
             return { [gameInfo.name]: "Connect Socket failed" };
         }
+
         const signInSuccessful = await requestSignIn(socket, authorizeInfo);
         const inGameResult = await requestInGame(socket, gameInfo);
+
+        socket.close();
 
         if (signInSuccessful && inGameResult) {
             return { [gameInfo.name]: { ...inGameResult } };
@@ -62,7 +65,7 @@ const connectSocket = async (gameInfo) =>
             transports: ["websocket"],
             upgrade: false,
             path: gameInfo.proxyRoute,
-            parser: MsgpackParser,
+            parser: config.enabledMsgPack ? MsgpackParser : undefined,
             extraHeaders: {
                 "user-agent": userAgent,
             },

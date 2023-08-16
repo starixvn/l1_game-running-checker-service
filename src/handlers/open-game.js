@@ -32,41 +32,8 @@ export const openGames = async (player, games) => {
 
         await setCurrencyGroup(ssoToken);
         const authorizeInfo = await authorize(ssoToken);
-        const gameInfos = GAMES.filter((game) => games.includes(game.id));
-
-        const result = [];
-        for (const game of gameInfos) {
-            const gameInfo = {
-                name: game.key,
-                key: game.key.toLocaleLowerCase(),
-                proxyRoute: `/${game.route ?? game.name.toLocaleLowerCase()}/socket.io`,
-            };
-            try {
-                const data = await joinGame(gameInfo, authorizeInfo);
-                result.push(data);
-            } catch (err) {
-                result.push({ [game.name]: err.message });
-            }
-        }
-
-        return result;
-    } catch (e) {
-        console.log(e);
-        return e;
-    }
-};
-
-export const openAllGames = async (player) => {
-    try {
-        const { username, password } = player;
-        const ssoToken = await getSSOToken(username, password);
-        if (!ssoToken) {
-            return "SSO FAILED !!!";
-        }
-        await setCurrencyGroup(ssoToken);
-        const authorizeInfo = await authorize(ssoToken);
-
-        const jobs = GAMES.map((game) => {
+        const gameInfos = games ? GAMES.filter((game) => games.includes(game.id)) : GAMES;
+        const jobs = gameInfos.map((game) => {
             const gameInfo = {
                 name: game.key,
                 proxyRoute: `/${game.route ?? game.name.toLocaleLowerCase()}/socket.io`,
@@ -74,9 +41,7 @@ export const openAllGames = async (player) => {
             return joinGame(gameInfo, authorizeInfo);
         });
 
-        const result = await Promise.all(jobs);
-
-        return result;
+        return await Promise.all(jobs);
     } catch (e) {
         console.log(e);
         return e;
