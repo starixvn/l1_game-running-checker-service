@@ -1,7 +1,8 @@
 import getSSOToken from "./sso-handler";
 import { authorize, setCurrencyGroup } from "./authorize-handler.js";
 import { joinGame } from "./socket-handler";
-import { GAMES } from "../constants/constants";
+import axios from "axios";
+import appConfigs from "../app-configs";
 
 export const openGame = async (player, gameInfo) => {
     try {
@@ -32,7 +33,8 @@ export const openGames = async (player, games) => {
 
         await setCurrencyGroup(ssoToken);
         const authorizeInfo = await authorize(ssoToken);
-        const gameInfos = games ? GAMES.filter((game) => games.includes(game.id)) : GAMES;
+        const gameConfigs = (await axios.get(`${appConfigs.proxy}/game/configurations`)).data;
+        const gameInfos = games ? gameConfigs.filter((game) => games.includes(game.id)) : GAMES;
         const jobs = gameInfos.map((game) => {
             const gameInfo = {
                 name: game.key,
