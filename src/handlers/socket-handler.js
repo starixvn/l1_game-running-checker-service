@@ -11,7 +11,7 @@ export const joinGame = async (gameInfo, authorizeInfo) => {
         const socket = await connectSocket(gameInfo);
 
         if (!socket || !socket.emit) {
-            return { [gameInfo.name]: "Connect Socket failed" };
+            return { [gameInfo.name]: { error: "Connect Socket failed" } };
         }
 
         const signInSuccessful = await requestSignIn(socket, authorizeInfo);
@@ -22,7 +22,7 @@ export const joinGame = async (gameInfo, authorizeInfo) => {
         if (signInSuccessful && inGameResult) {
             return { [gameInfo.name]: { ...inGameResult } };
         } else {
-            return { [gameInfo.name]: "Ingame failed" };
+            return { [gameInfo.name]: { error: "Ingame failed" } };
         }
     } catch (err) {
         return { [gameInfo.name]: err.message };
