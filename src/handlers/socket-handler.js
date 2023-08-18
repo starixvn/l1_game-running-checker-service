@@ -20,7 +20,7 @@ export const joinGame = async (gameInfo, authorizeInfo) => {
         socket.close();
 
         if (signInSuccessful && inGameResult) {
-            return { [gameInfo.name]: { ...inGameResult } };
+            return { [gameInfo.name]: { ...inGameResult, successful: true } };
         } else {
             return { [gameInfo.name]: { error: "Ingame failed" } };
         }
