@@ -17,25 +17,29 @@ const encrypt = (text) => {
 };
 
 export const getSSOToken = async (username, password) => {
-    const encryptPassword = {
-        timestamp: new Date().toUTCString(),
-        username,
-        password,
-    };
+    try {
+        const encryptPassword = {
+            timestamp: new Date().toUTCString(),
+            username,
+            password,
+        };
 
-    const request = {
-        username,
-        encryptedPassword: encrypt(JSON.stringify(encryptPassword)),
-        language: "en",
-    };
+        const request = {
+            username,
+            encryptedPassword: encrypt(JSON.stringify(encryptPassword)),
+            language: "en",
+        };
 
-    const result = await axios.post(config.connectSiteUrl, request);
+        const result = await axios.post(config.connectSiteUrl, request);
 
-    if (result?.data?.redirectUri) {
-        return new URL(result?.data?.redirectUri)?.searchParams.get("token");
+        if (result?.data?.redirectUri) {
+            return new URL(result?.data?.redirectUri)?.searchParams.get("token");
+        }
+
+        return null;
+    } catch (err) {
+        return null;
     }
-
-    return null;
 };
 
 export default getSSOToken;

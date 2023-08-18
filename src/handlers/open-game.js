@@ -27,7 +27,7 @@ export const openGames = async (player, games) => {
         const ssoToken = await getSSOToken(username, password);
 
         if (!ssoToken) {
-            return "SSO FAILED !!!";
+            return { error: "SSO FAILED !!!" };
         }
 
         await setCurrencyGroup(ssoToken);
